@@ -5,7 +5,7 @@
  */
 package com.xpertsoft.mini.esante.gui;
 
-import com.xpertsoft.mini.esante.RMI.NetworkingRMI;
+import com.xpertsoft.mini.esante.JCSP.NetworkingJCSP;
 
 /**
  *

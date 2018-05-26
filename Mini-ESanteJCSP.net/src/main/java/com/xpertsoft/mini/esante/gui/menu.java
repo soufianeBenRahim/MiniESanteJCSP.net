@@ -5,7 +5,7 @@ import com.xpertsoft.mini.esante.Model.PrescriptionDetail;
 import com.xpertsoft.mini.esante.Model.Prescriptionentet;
 
 
-import com.xpertsoft.mini.esante.RMI.NetworkingRMI;
+import com.xpertsoft.mini.esante.JCSP.NetworkingJCSP;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -20,7 +20,7 @@ private String pass;
     /**
      * Creates new form menu
      */
-   NetworkingRMI Net;
+   NetworkingJCSP Net;
 
     public menu() {
 
@@ -389,7 +389,7 @@ private String pass;
     }//GEN-LAST:event_jButtonSupprimerPrescriptionActionPerformed
 
     private void jButtonEnvoiyerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnvoiyerPrescriptionActionPerformed
-       if (Net==null) Net=new NetworkingRMI(this);
+       if (Net==null) Net=new NetworkingJCSP(this);
        Net.IPServiceDestant=jTextFieldIPDeestant.getText();
         int ID=(int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(),0);
         MetierImplimentationTiers m = new MetierImplimentationTiers();
@@ -417,7 +417,7 @@ private String pass;
     }//GEN-LAST:event_jButtonSupprimerTiersActionPerformed
 
     private void jButtonConnectAnnuaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectAnnuaireActionPerformed
-if (Net==null) Net=new NetworkingRMI(this);
+if (Net==null) Net=new NetworkingJCSP(this);
 Net.IPAnnuaire=jTextFieldIPAdress.getText();
 LoginForm lf=new LoginForm(this,true);
 lf.setVisible(true);
@@ -472,7 +472,7 @@ this.displayPrescriptionDetail(value);
     }//GEN-LAST:event_jTablePRescriptionMouseClicked
 
     private void jButtonConnectClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectClientActionPerformed
-if (Net==null) Net=new NetworkingRMI(this);
+if (Net==null) Net=new NetworkingJCSP(this);
         Net.IPAnnuaire=jTextFieldIPAdress.getText();
 GetIPForm IF=new GetIPForm(this,true);
 IF.setVisible(true);
@@ -487,7 +487,7 @@ jTextFieldIPDeestant.setText(IF.IP);
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
     private void jButtonDeconnectAnnuairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeconnectAnnuairActionPerformed
-if (Net==null) Net=new NetworkingRMI(this);
+if (Net==null) Net=new NetworkingJCSP(this);
 Net.IPAnnuaire=jTextFieldIPAdress.getText();
 if(Net.Deconnect(this.name,this.pass)){
     this.jButtonConnectAnnuaire.setEnabled(true);
@@ -503,7 +503,7 @@ if(Net.Deconnect(this.name,this.pass)){
     }//GEN-LAST:event_jButtonDeconnectAnnuairActionPerformed
 
     private void jButtonReceverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceverActionPerformed
-if (Net==null) Net=new NetworkingRMI(this);
+if (Net==null) Net=new NetworkingJCSP(this);
 Net.Recive();
 jButtonRecever.setEnabled(false);
 jButtonEndRecive.setEnabled(true);// TODO add your handling code here:
@@ -517,7 +517,7 @@ jButtonEndRecive.setEnabled(false);        // TODO add your handling code here:
 
     private void jButtonSolliciterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolliciterActionPerformed
    
-        if (Net==null) Net=new NetworkingRMI(this);
+        if (Net==null) Net=new NetworkingJCSP(this);
         Net.IPServiceDestant=jTextFieldIPDeestant.getText();
         SollicitationForm SF=new SollicitationForm(this,true);
         SF.setVisible(true);
