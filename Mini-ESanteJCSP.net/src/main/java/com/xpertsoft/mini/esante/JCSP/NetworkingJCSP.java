@@ -7,6 +7,12 @@ import com.xpertsoft.mini.esante.gui.menu;
 
 
 import java.util.List;
+import javax.swing.JOptionPane;
+import org.jcsp.net.NetChannelInput;
+import org.jcsp.net.NetChannelOutput;
+import org.jcsp.net.Node;
+import org.jcsp.net.NodeInitFailedException;
+import org.jcsp.net.cns.CNS;
 
 
 public class NetworkingJCSP {
@@ -21,7 +27,16 @@ public class NetworkingJCSP {
 
     }
     public void Recive() {
-     
+     try {
+            Node.getInstance().init();
+            NetChannelInput in = CNS.createNet2One("rx.in");
+            String Message = (String)in.read();
+            int result=JOptionPane.showConfirmDialog(menu, Message,"Solisitation" , JOptionPane.YES_NO_OPTION);
+            
+            CNS.destroyChannelEnd(in);
+          } catch (NodeInitFailedException e) {
+            e.printStackTrace();
+          }
     }
     public String GetIPUser(String Psudo) {
         
@@ -44,7 +59,14 @@ public class NetworkingJCSP {
     }
      
     public void SendSollicitation(String Message) {
-     
+      try {
+          Node.getInstance().init();
+          NetChannelOutput out = CNS.createOne2Net("rx.in");
+          out.write(Message);
+          CNS.destroyChannelEnd(out);
+        } catch (NodeInitFailedException e) {
+          e.printStackTrace();
+        }
     }
 
 }

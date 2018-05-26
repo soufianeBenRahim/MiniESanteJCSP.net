@@ -472,7 +472,7 @@ jButtonEndRecive.setEnabled(false);        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEndReciveActionPerformed
 
     private void jButtonSolliciterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolliciterActionPerformed
-   
+Net.SendSollicitation("solicitation de medecin x ");
     }//GEN-LAST:event_jButtonSolliciterActionPerformed
     public static void main(String[] args) {
          // TODO code application logic here
