@@ -389,13 +389,7 @@ private String pass;
     }//GEN-LAST:event_jButtonSupprimerPrescriptionActionPerformed
 
     private void jButtonEnvoiyerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnvoiyerPrescriptionActionPerformed
-       if (Net==null) Net=new NetworkingJCSP(this);
-       Net.IPServiceDestant=jTextFieldIPDeestant.getText();
-        int ID=(int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(),0);
-        MetierImplimentationTiers m = new MetierImplimentationTiers();
-        Prescriptionentet p=m.GetPrescriptionentetByID(ID);
-        List<PrescriptionDetail> detail=m.getDetailPrescription(p.getCodePrescription());
-        Net.SendPrescription(p,detail);
+      
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEnvoiyerPrescriptionActionPerformed
 
@@ -417,22 +411,7 @@ private String pass;
     }//GEN-LAST:event_jButtonSupprimerTiersActionPerformed
 
     private void jButtonConnectAnnuaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectAnnuaireActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-Net.IPAnnuaire=jTextFieldIPAdress.getText();
-LoginForm lf=new LoginForm(this,true);
-lf.setVisible(true);
-if(lf.connct){
-if(Net.Connect(lf.name, lf.Passs)){
-    this.name=lf.name;
-    this.pass=lf.Passs;
-    this.jButtonConnectAnnuaire.setEnabled(false);
-    this.jButtonDeconnectAnnuair.setEnabled(true);
-    JOptionPane.showMessageDialog(this, "Connexion avec succès");
-    }else{
-         JOptionPane.showMessageDialog(this, "connection a l'annuaire echoué");
 
-        }
-}
 
 
 // TODO add your handling code here:
@@ -472,34 +451,11 @@ this.displayPrescriptionDetail(value);
     }//GEN-LAST:event_jTablePRescriptionMouseClicked
 
     private void jButtonConnectClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectClientActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-        Net.IPAnnuaire=jTextFieldIPAdress.getText();
-GetIPForm IF=new GetIPForm(this,true);
-IF.setVisible(true);
-if(IF.connect){
-if(IF.choix==1){
-    jTextFieldIPDeestant.setText(Net.GetIPUser(IF.Psudo));
 
-}else{
-jTextFieldIPDeestant.setText(IF.IP);
-}
-} 
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
     private void jButtonDeconnectAnnuairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeconnectAnnuairActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-Net.IPAnnuaire=jTextFieldIPAdress.getText();
-if(Net.Deconnect(this.name,this.pass)){
-    this.jButtonConnectAnnuaire.setEnabled(true);
-    this.jButtonDeconnectAnnuair.setEnabled(false);
-}else{
-         JOptionPane.showMessageDialog(this, "déconnection a l'annuaire echoué");
 
-        }
-
-    
-   
-// TODO add your handling code here:
     }//GEN-LAST:event_jButtonDeconnectAnnuairActionPerformed
 
     private void jButtonReceverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceverActionPerformed
@@ -517,13 +473,6 @@ jButtonEndRecive.setEnabled(false);        // TODO add your handling code here:
 
     private void jButtonSolliciterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolliciterActionPerformed
    
-        if (Net==null) Net=new NetworkingJCSP(this);
-        Net.IPServiceDestant=jTextFieldIPDeestant.getText();
-        SollicitationForm SF=new SollicitationForm(this,true);
-        SF.setVisible(true);
-        if(SF.OK){
-        Net.SendSollicitation(name);
-        }
     }//GEN-LAST:event_jButtonSolliciterActionPerformed
     public static void main(String[] args) {
          // TODO code application logic here
