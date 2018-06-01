@@ -411,7 +411,24 @@ private String pass;
     }//GEN-LAST:event_jButtonSupprimerTiersActionPerformed
 
     private void jButtonConnectAnnuaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectAnnuaireActionPerformed
+if (Net==null) Net=new NetworkingJCSP(this);
+Net.IPAnnuaire=jTextFieldIPAdress.getText();
+LoginForm lf=new LoginForm(this,true);
+lf.setVisible(true);
+if(lf.connct){
+    
+if(Net.Connect(lf.name, lf.Passs)){
 
+    this.name=lf.name;
+    this.pass=lf.Passs;
+    this.jButtonConnectAnnuaire.setEnabled(false);
+    this.jButtonDeconnectAnnuair.setEnabled(true);
+    JOptionPane.showMessageDialog(this, "Connexion avec succès");
+    }else{
+         JOptionPane.showMessageDialog(this, "connection a l'annuaire echoué");
+
+        }
+}
 
 
 // TODO add your handling code here:
