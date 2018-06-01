@@ -472,7 +472,15 @@ this.displayPrescriptionDetail(value);
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
     private void jButtonDeconnectAnnuairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeconnectAnnuairActionPerformed
+if (Net==null) Net=new NetworkingJCSP(this);
+Net.IPAnnuaire=jTextFieldIPAdress.getText();
+if(Net.Deconnect(this.name,this.pass)){
+    this.jButtonConnectAnnuaire.setEnabled(true);
+    this.jButtonDeconnectAnnuair.setEnabled(false);
+}else{
+         JOptionPane.showMessageDialog(this, "déconnection a l'annuaire echoué");
 
+        }
     }//GEN-LAST:event_jButtonDeconnectAnnuairActionPerformed
 
     private void jButtonReceverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceverActionPerformed
