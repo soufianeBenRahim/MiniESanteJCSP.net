@@ -84,7 +84,9 @@ public String IPAnnuaire="";
     public boolean Deconnect(String name, String pass) {
        if(connectChan==null)    GetCNS(); 
        if(!connectToAnnuer) return false;
-       connectChan.write(new Contact(name, pass, messageOutChan, 2));
+        if(messageInChan==null)messageInChan = NetChannelEnd.createNet2One();
+        NetChannelOutput serverOutChan = NetChannelEnd.createOne2Net(messageInChan.getChannelLocation());
+       connectChan.write(new Contact(name, pass, serverOutChan, 2));
        Object o = messageInChan.read();
        return (boolean) o;
     }
