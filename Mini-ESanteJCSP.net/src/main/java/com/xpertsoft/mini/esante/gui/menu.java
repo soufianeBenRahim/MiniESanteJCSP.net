@@ -1,61 +1,79 @@
 package com.xpertsoft.mini.esante.gui;
 
+import Networking.Contact;
 import com.xpertsoft.mini.esante.Metier.MetierImplimentationTiers;
 import com.xpertsoft.mini.esante.Model.PrescriptionDetail;
 import com.xpertsoft.mini.esante.Model.Prescriptionentet;
 
-
-import com.xpertsoft.mini.esante.JCSP.NetworkingJCSP;
+import Networking.NetworkingJCSP;
+import Networking.ProcessReceiver;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import org.jcsp.lang.CSProcess;
+import org.jcsp.lang.Channel;
+import org.jcsp.lang.One2OneChannel;
+import org.jcsp.lang.Parallel;
+import org.jcsp.net2.NetAltingChannelInput;
+import org.jcsp.net2.NetChannel;
+import org.jcsp.net2.NetChannelInput;
+import org.jcsp.net2.Node;
+import org.jcsp.net2.tcpip.TCPIPNodeAddress;
 
 /**
  *
  * @author Soufiane
  */
-public class menu extends javax.swing.JFrame  {
-private String name;
-private String pass;
+public class menu extends javax.swing.JFrame {
+
+    private String name;
+    private String pass;
     /**
      * Creates new form menu
      */
-   NetworkingJCSP Net;
+    NetworkingJCSP Net;
 
     public menu() {
 
         initComponents();
         // fenetre en maximeum
         this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
-       
+
         displayTiers();
         displayPrescription();
     }
-    public void SetIPDestant(String IP){
-    this.jTextFieldIPDeestant.setText(IP);
+
+    public void SetIPDestant(String IP) {
+        this.jTextFieldIPDeestant.setText(IP);
     }
+
     private void displayTiers() {
-         MetierImplimentationTiers impTiers=new MetierImplimentationTiers();
-    this.TableTiers.setModel(new AbstractTableModelTiers(impTiers.getALLTiers()));
+        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        this.TableTiers.setModel(new AbstractTableModelTiers(impTiers.getALLTiers()));
     }
-    
-     private void displayPrescription() {
-         MetierImplimentationTiers impTiers=new MetierImplimentationTiers();
-         List<Prescriptionentet> pres=impTiers.getAllPrescription();
-         
-         this.jTablePRescription.setModel(new AbstractTableModelPrescription(pres));
-         if(pres.size()>0) {
-                this.jTablePRescription.setRowSelectionInterval(0, 0);
-                displayPrescriptionDetail(Integer.parseInt(this.jTablePRescription.
-                 getValueAt(0, 0).toString()));
-         }
-    }
-    
-        private void displayPrescriptionDetail(int IDprescription) {
-            MetierImplimentationTiers impTiers=new MetierImplimentationTiers();
-            this.jTablePrescriptionDetail.setModel(new AbstractTableModelPrescriptionDetail(
-                    impTiers.getDetailPrescription(IDprescription)));
+
+    private void displayPrescription() {
+        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        List<Prescriptionentet> pres = impTiers.getAllPrescription();
+
+        this.jTablePRescription.setModel(new AbstractTableModelPrescription(pres));
+        if (pres.size() > 0) {
+            this.jTablePRescription.setRowSelectionInterval(0, 0);
+            displayPrescriptionDetail(Integer.parseInt(this.jTablePRescription.
+                    getValueAt(0, 0).toString()));
         }
+    }
+
+    private void displayPrescriptionDetail(int IDprescription) {
+        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        this.jTablePrescriptionDetail.setModel(new AbstractTableModelPrescriptionDetail(
+                impTiers.getDetailPrescription(IDprescription)));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -306,6 +324,11 @@ private String pass;
         jTabbedPane.addTab("Prescription", PannelPerspection);
 
         jTextFieldIPAdress.setText("192.168.8.101");
+        jTextFieldIPAdress.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldIPAdressFocusLost(evt);
+            }
+        });
 
         jLabel1.setText("Adresse Annuaire");
 
@@ -382,129 +405,184 @@ private String pass;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSupprimerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSupprimerPrescriptionActionPerformed
-           MetierImplimentationTiers m =new MetierImplimentationTiers();
-        AbstractTableModelPrescription model=(AbstractTableModelPrescription)jTablePRescription.getModel();
+        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        AbstractTableModelPrescription model = (AbstractTableModelPrescription) jTablePRescription.getModel();
         model.removePrescription(jTablePRescription.getSelectedRow());
         displayPrescription();
     }//GEN-LAST:event_jButtonSupprimerPrescriptionActionPerformed
 
     private void jButtonEnvoiyerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnvoiyerPrescriptionActionPerformed
-      
+
+        int ID = (int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(), 0);
+        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        Prescriptionentet p = m.GetPrescriptionentetByID(ID);
+        List<PrescriptionDetail> detail = m.getDetailPrescription(p.getCodePrescription());
+        //   Net.SendPrescription(p,detail);
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEnvoiyerPrescriptionActionPerformed
 
     private void jButtonAjouterTiersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAjouterTiersActionPerformed
-        FicheTiers FP = new FicheTiers(this, true,"Ajouter",null);
+        FicheTiers FP = new FicheTiers(this, true, "Ajouter", null);
         FP.setVisible(true);
         displayTiers();
-      
+
     }//GEN-LAST:event_jButtonAjouterTiersActionPerformed
 
     private void jButtonSupprimerTiersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSupprimerTiersActionPerformed
-        MetierImplimentationTiers m =new MetierImplimentationTiers();
-        AbstractTableModelTiers model=(AbstractTableModelTiers)TableTiers.getModel();
-        int row=TableTiers.getSelectedRow();
-        if(row<0) return;
+        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        AbstractTableModelTiers model = (AbstractTableModelTiers) TableTiers.getModel();
+        int row = TableTiers.getSelectedRow();
+        if (row < 0) {
+            return;
+        }
         model.removeTiers(row);
         displayTiers();
         displayPrescription();
     }//GEN-LAST:event_jButtonSupprimerTiersActionPerformed
 
+
     private void jButtonConnectAnnuaireActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectAnnuaireActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-Net.IPAnnuaire=jTextFieldIPAdress.getText();
-LoginForm lf=new LoginForm(this,true);
-lf.setVisible(true);
-if(lf.connct){
-    
-if(Net.Connect(lf.name, lf.Passs)){
 
-    this.name=lf.name;
-    this.pass=lf.Passs;
-    this.jButtonConnectAnnuaire.setEnabled(false);
-    this.jButtonDeconnectAnnuair.setEnabled(true);
-    JOptionPane.showMessageDialog(this, "Connexion avec succès");
-    }else{
-         JOptionPane.showMessageDialog(this, "connection a l'annuaire echoué");
-
+//Net.IPAnnuaire=jTextFieldIPAdress.getText();
+        LoginForm lf = new LoginForm(this, true);
+        lf.setVisible(true);
+        if (lf.connct) {
+            try {
+                Contact c = new Contact(lf.name, lf.Passs, new TCPIPNodeAddress(InetAddress.getLocalHost().getHostAddress(),5000), 1);
+                this.name = lf.name;
+                this.pass = lf.Passs;
+                ControlIPAnnuaire.out().write(jTextFieldIPAdress.getText());
+                ControlMesage2Sind.out().write(c);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-}
-
-
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonConnectAnnuaireActionPerformed
 
     private void jButtonModifierTiersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModifierTiersActionPerformed
-        FicheTiers FP = new FicheTiers(this, true,"Modifier",(String) TableTiers.getValueAt(TableTiers.getSelectedRow(), 0));
+        FicheTiers FP = new FicheTiers(this, true, "Modifier", (String) TableTiers.getValueAt(TableTiers.getSelectedRow(), 0));
         FP.setVisible(true);
         displayTiers();        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonModifierTiersActionPerformed
 
     private void jButtonAjouterPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAjouterPrescriptionActionPerformed
-        FichePrescription FP = new FichePrescription(this, true,"Ajouter",new Prescriptionentet(),null);
-        FP.setVisible(true); 
-        this.displayPrescription();  
-        
+        FichePrescription FP = new FichePrescription(this, true, "Ajouter", new Prescriptionentet(), null);
+        FP.setVisible(true);
+        this.displayPrescription();
+
 
     }//GEN-LAST:event_jButtonAjouterPrescriptionActionPerformed
 
     private void jButtonModifierPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModifierPrescriptionActionPerformed
         MetierImplimentationTiers m = new MetierImplimentationTiers();
-        Prescriptionentet p =m.GetPrescriptionentetByID((int)jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(), 0));
-        
-        FichePrescription FP = new FichePrescription(this, true,"Modifier",p,null);
-        FP.setVisible(true); 
-        this.displayPrescription();  
+        Prescriptionentet p = m.GetPrescriptionentetByID((int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(), 0));
+
+        FichePrescription FP = new FichePrescription(this, true, "Modifier", p, null);
+        FP.setVisible(true);
+        this.displayPrescription();
     }//GEN-LAST:event_jButtonModifierPrescriptionActionPerformed
 
     private void jTablePRescriptionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePRescriptionMouseClicked
-int row=jTablePRescription.getSelectedRow();
-if (row>=0){
-    int value=(int)jTablePRescription.getValueAt(row, 0);
-this.displayPrescriptionDetail(value);
-}
+        int row = jTablePRescription.getSelectedRow();
+        if (row >= 0) {
+            int value = (int) jTablePRescription.getValueAt(row, 0);
+            this.displayPrescriptionDetail(value);
+        }
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jTablePRescriptionMouseClicked
 
     private void jButtonConnectClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectClientActionPerformed
 
+
+GetIPForm IF=new GetIPForm(this,true);
+IF.setVisible(true);
+if(IF.connect){
+if(IF.choix==1){
+    ControlMesage2Sind.out().write(new Contact(IF.Psudo, new TCPIPNodeAddress(4000)));
+    jTextFieldIPDeestant.setText("Par Psudo :"+IF.Psudo);
+
+}else{
+jTextFieldIPDeestant.setText("Par IP : "+IF.IP);
+}
+} 
+
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
     private void jButtonDeconnectAnnuairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeconnectAnnuairActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-Net.IPAnnuaire=jTextFieldIPAdress.getText();
-if(Net.Deconnect(this.name,this.pass)){
-    this.jButtonConnectAnnuaire.setEnabled(true);
-    this.jButtonDeconnectAnnuair.setEnabled(false);
-}else{
-         JOptionPane.showMessageDialog(this, "déconnection a l'annuaire echoué");
 
-        }
+
     }//GEN-LAST:event_jButtonDeconnectAnnuairActionPerformed
 
     private void jButtonReceverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReceverActionPerformed
-if (Net==null) Net=new NetworkingJCSP(this);
-Net.Recive();
-jButtonRecever.setEnabled(false);
-jButtonEndRecive.setEnabled(true);// TODO add your handling code here:
+
+        ControlRecive.out().write(true);
+
     }//GEN-LAST:event_jButtonReceverActionPerformed
 
     private void jButtonEndReciveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEndReciveActionPerformed
-Net.EndRecive();
-jButtonRecever.setEnabled(true);
-jButtonEndRecive.setEnabled(false);        // TODO add your handling code here:
+        ControlRecive.out().write(false);
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEndReciveActionPerformed
 
     private void jButtonSolliciterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolliciterActionPerformed
-Net.SendSollicitation("solicitation de medecin x ");
+
     }//GEN-LAST:event_jButtonSolliciterActionPerformed
+
+    private void jTextFieldIPAdressFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldIPAdressFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldIPAdressFocusLost
+    static One2OneChannel ControlRecive;
+    static One2OneChannel ControlMesage2Sind;
+    static One2OneChannel ControlIPAnnuaire;
+    static NetAltingChannelInput inChanRemote;
+    static NetAltingChannelInput inChanAnnuair;
+
+    public void ChangeStatAnnuaireConnection(boolean connect) {
+        this.jButtonConnectAnnuaire.setEnabled(!connect);
+        this.jButtonDeconnectAnnuair.setEnabled(connect);
+        if (connect) {
+
+            JOptionPane.showMessageDialog(this, "Connexion avec succès");
+        } else {
+
+            JOptionPane.showMessageDialog(this, "Connexion echouée");
+        }
+
+    }
+
+    public void ChangeStatAnnuaireDeconnection(String name, String Pass) {
+        this.jButtonConnectAnnuaire.setEnabled(true);
+        this.jButtonDeconnectAnnuair.setEnabled(false);
+        JOptionPane.showMessageDialog(this, "Deconnection avec succès");
+    }
+
+    public void ChangeStatRecive(boolean recive) {
+        jButtonRecever.setEnabled(true);
+        jButtonEndRecive.setEnabled(false);// TODO add your handling code here:
+    }
+
     public static void main(String[] args) {
-         // TODO code application logic here
-         menu menu = new menu();
-   
+        // TODO code application logic here
+        TCPIPNodeAddress addr = new TCPIPNodeAddress(5000);
+
+        Node.getInstance().init(addr);
+
+        inChanRemote = NetChannel.numberedNet2One(45);
+        inChanAnnuair = NetChannel.numberedNet2One(46);
+        menu menu = new menu();
+
         menu.setVisible(true);
-    }  
+        ControlRecive = Channel.one2one();;
+        ControlMesage2Sind = Channel.one2one();;
+        ControlIPAnnuaire = Channel.one2one();;
+
+        new Parallel(
+                new CSProcess[]{
+                    new NetworkingJCSP(inChanAnnuair, inChanRemote, ControlIPAnnuaire.in(), ControlRecive.in(), ControlMesage2Sind.in(), menu)})
+                .run();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PannelPerspection;
