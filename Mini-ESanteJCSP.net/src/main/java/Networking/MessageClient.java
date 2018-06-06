@@ -50,10 +50,7 @@ public class MessageClient implements java.io.Serializable {
         this.TypeRequest = TypeRequest;
     }
 
-    public MessageClient(String Solicitation) {
-        this.Solicitation = Solicitation;
-        this.TypeRequest=SOLICITATION;
-    }
+
 
     public String getSolicitation() {
         return Solicitation;

@@ -1,12 +1,13 @@
 package com.xpertsoft.mini.esante.gui;
 
 import Networking.Contact;
+import Networking.MessageClient;
 import com.xpertsoft.mini.esante.Metier.MetierImplimentationTiers;
 import com.xpertsoft.mini.esante.Model.PrescriptionDetail;
 import com.xpertsoft.mini.esante.Model.Prescriptionentet;
 
 import Networking.NetworkingJCSP;
-import Networking.ProcessReceiver;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -20,7 +21,6 @@ import org.jcsp.lang.One2OneChannel;
 import org.jcsp.lang.Parallel;
 import org.jcsp.net2.NetAltingChannelInput;
 import org.jcsp.net2.NetChannel;
-import org.jcsp.net2.NetChannelInput;
 import org.jcsp.net2.Node;
 import org.jcsp.net2.tcpip.TCPIPNodeAddress;
 
@@ -32,6 +32,7 @@ public class menu extends javax.swing.JFrame {
 
     private String name;
     private String pass;
+    private String UsingIP;
     /**
      * Creates new form menu
      */
@@ -45,6 +46,32 @@ public class menu extends javax.swing.JFrame {
 
         displayTiers();
         displayPrescription();
+
+        try {
+            InetAddress[] Adress = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+            String[] AdressStr = new String[Adress.length];
+            for (int i = 0; i < Adress.length; i++) {
+                AdressStr[i] = Adress[i].getHostAddress();
+            }
+            if (Adress.length == 1) {
+                UsingIP = AdressStr[0];
+            } else if (Adress.length == 0) {
+                UsingIP = jTextFieldIPAdress.getText();
+            } else {
+                JOptionPane jop = new JOptionPane(), jop2 = new JOptionPane();
+                UsingIP = (String) jop.showInputDialog(null,
+                        "Veuillez indiquer L'adress IP de l'ecoute !",
+                        "IP info !",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        AdressStr,
+                        AdressStr[0]);
+            }
+
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void SetIPDestant(String IP) {
@@ -323,10 +350,16 @@ public class menu extends javax.swing.JFrame {
 
         jTabbedPane.addTab("Prescription", PannelPerspection);
 
-        jTextFieldIPAdress.setText("192.168.8.101");
+        jTextFieldIPAdress.setText("192.168.8.100");
+        jTextFieldIPAdress.setToolTipText("");
         jTextFieldIPAdress.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 jTextFieldIPAdressFocusLost(evt);
+            }
+        });
+        jTextFieldIPAdress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldIPAdressActionPerformed(evt);
             }
         });
 
@@ -417,7 +450,7 @@ public class menu extends javax.swing.JFrame {
         MetierImplimentationTiers m = new MetierImplimentationTiers();
         Prescriptionentet p = m.GetPrescriptionentetByID(ID);
         List<PrescriptionDetail> detail = m.getDetailPrescription(p.getCodePrescription());
-        //   Net.SendPrescription(p,detail);
+        ControlMesage2Sind.out().write(new MessageClient(p, detail));
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEnvoiyerPrescriptionActionPerformed
 
@@ -448,7 +481,7 @@ public class menu extends javax.swing.JFrame {
         lf.setVisible(true);
         if (lf.connct) {
             try {
-                Contact c = new Contact(lf.name, lf.Passs, new TCPIPNodeAddress(InetAddress.getLocalHost().getHostAddress(),5000), 1);
+                Contact c = new Contact(lf.name, lf.Passs, new TCPIPNodeAddress(InetAddress.getLocalHost().getHostAddress(), 5000), 1);
                 this.name = lf.name;
                 this.pass = lf.Passs;
                 ControlIPAnnuaire.out().write(jTextFieldIPAdress.getText());
@@ -495,18 +528,19 @@ public class menu extends javax.swing.JFrame {
 
     private void jButtonConnectClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectClientActionPerformed
 
+        GetIPForm IF = new GetIPForm(this, true);
+        IF.setVisible(true);
+        if (IF.connect) {
+            if (IF.choix == 1) {
+                ControlMesage2Sind.out().write(new Contact(IF.Psudo, new TCPIPNodeAddress("192.168.8.100", 5000)));
+                jTextFieldIPDeestant.setText("Par Psudo :" + IF.Psudo);
 
-GetIPForm IF=new GetIPForm(this,true);
-IF.setVisible(true);
-if(IF.connect){
-if(IF.choix==1){
-    ControlMesage2Sind.out().write(new Contact(IF.Psudo, new TCPIPNodeAddress(4000)));
-    jTextFieldIPDeestant.setText("Par Psudo :"+IF.Psudo);
-
-}else{
-jTextFieldIPDeestant.setText("Par IP : "+IF.IP);
-}
-} 
+            } else {
+                ControlMesage2Sind.out().write(new TCPIPNodeAddress(UsingIP, 5000));
+                jTextFieldIPDeestant.setText("Par IP : " + IF.IP);
+                
+            }
+        }
 
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
@@ -527,12 +561,22 @@ jTextFieldIPDeestant.setText("Par IP : "+IF.IP);
     }//GEN-LAST:event_jButtonEndReciveActionPerformed
 
     private void jButtonSolliciterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSolliciterActionPerformed
-
+      
+        SollicitationForm SF=new SollicitationForm(this,true);
+        SF.setVisible(true);
+        if(SF.OK){
+        ControlMesage2Sind.out().write(new MessageClient(SF.Message, new TCPIPNodeAddress(UsingIP, 5000)));
+        }
+        
     }//GEN-LAST:event_jButtonSolliciterActionPerformed
 
     private void jTextFieldIPAdressFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldIPAdressFocusLost
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldIPAdressFocusLost
+
+    private void jTextFieldIPAdressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldIPAdressActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldIPAdressActionPerformed
     static One2OneChannel ControlRecive;
     static One2OneChannel ControlMesage2Sind;
     static One2OneChannel ControlIPAnnuaire;
@@ -542,6 +586,7 @@ jTextFieldIPDeestant.setText("Par IP : "+IF.IP);
     public void ChangeStatAnnuaireConnection(boolean connect) {
         this.jButtonConnectAnnuaire.setEnabled(!connect);
         this.jButtonDeconnectAnnuair.setEnabled(connect);
+        this.setTitle("Psudo connectee :" + this.name);
         if (connect) {
 
             JOptionPane.showMessageDialog(this, "Connexion avec succès");
@@ -552,15 +597,15 @@ jTextFieldIPDeestant.setText("Par IP : "+IF.IP);
 
     }
 
-    public void ChangeStatAnnuaireDeconnection(String name, String Pass) {
-        this.jButtonConnectAnnuaire.setEnabled(true);
-        this.jButtonDeconnectAnnuair.setEnabled(false);
+    public void ChangeStatAnnuaireDeconnection(boolean desconnect) {
+        this.jButtonConnectAnnuaire.setEnabled(desconnect);
+        this.jButtonDeconnectAnnuair.setEnabled(!desconnect);
         JOptionPane.showMessageDialog(this, "Deconnection avec succès");
     }
 
     public void ChangeStatRecive(boolean recive) {
-        jButtonRecever.setEnabled(true);
-        jButtonEndRecive.setEnabled(false);// TODO add your handling code here:
+        jButtonRecever.setEnabled(!recive);
+        jButtonEndRecive.setEnabled(recive);// TODO add your handling code here:
     }
 
     public static void main(String[] args) {

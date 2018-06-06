@@ -87,6 +87,10 @@ public class NetworkingJCSP implements CSProcess {
                         Chan2Annurair.write((Contact) o);
                     } else if (o instanceof MessageClient) {
                         Channel2Remout.write((MessageClient) o);
+                    }else if(o instanceof  TCPIPNodeAddress){
+                        NodeID remoteID =
+                        LinkFactory.getLink((TCPIPNodeAddress) o).getRemoteNodeID();
+                        Channel2Remout = NetChannel.one2net(remoteID, 45);
                     }
                     break;
                 // pour le feedback de l'annuaire
@@ -97,7 +101,22 @@ public class NetworkingJCSP implements CSProcess {
                         LinkFactory.getLink(((Contact) o2).getNodAdress()).getRemoteNodeID();
                         Channel2Remout = NetChannel.one2net(remoteID, 45);
                     } else {
-                        m.ChangeStatAnnuaireConnection((boolean)o2);
+                        switch((int)o2){
+                            case 0:
+                                 m.ChangeStatAnnuaireConnection(true);
+                                break;
+                            case 1:
+                                 m.ChangeStatAnnuaireConnection(false);
+                                break;
+                            case 2:
+                                m.ChangeStatAnnuaireDeconnection(true);
+                                break;
+                                
+                            case 3:
+                                m.ChangeStatAnnuaireDeconnection(false);
+                                break;
+                        }
+                       
                     }
                     break;
             }
