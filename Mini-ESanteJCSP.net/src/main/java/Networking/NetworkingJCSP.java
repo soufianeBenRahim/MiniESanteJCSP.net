@@ -115,6 +115,10 @@ public class NetworkingJCSP implements CSProcess {
                             case 3:
                                 m.ChangeStatAnnuaireDeconnection(false);
                                 break;
+                            case 4:
+                                JOptionPane jop2 = new JOptionPane();
+                                jop2.showMessageDialog(null, "ce medecin n'est pas connectee", "inf", JOptionPane.INFORMATION_MESSAGE);
+                            break;
                         }
                        
                     }

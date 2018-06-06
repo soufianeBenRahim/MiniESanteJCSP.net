@@ -480,15 +480,11 @@ public class menu extends javax.swing.JFrame {
         LoginForm lf = new LoginForm(this, true);
         lf.setVisible(true);
         if (lf.connct) {
-            try {
-                Contact c = new Contact(lf.name, lf.Passs, new TCPIPNodeAddress(InetAddress.getLocalHost().getHostAddress(), 5000), 1);
+                Contact c = new Contact(lf.name, lf.Passs, new TCPIPNodeAddress(UsingIP, 5000), 1);
                 this.name = lf.name;
                 this.pass = lf.Passs;
                 ControlIPAnnuaire.out().write(jTextFieldIPAdress.getText());
                 ControlMesage2Sind.out().write(c);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonConnectAnnuaireActionPerformed
@@ -532,7 +528,7 @@ public class menu extends javax.swing.JFrame {
         IF.setVisible(true);
         if (IF.connect) {
             if (IF.choix == 1) {
-                ControlMesage2Sind.out().write(new Contact(IF.Psudo, new TCPIPNodeAddress("192.168.8.100", 5000)));
+                ControlMesage2Sind.out().write(new Contact(IF.Psudo, new TCPIPNodeAddress(UsingIP, 5000)));
                 jTextFieldIPDeestant.setText("Par Psudo :" + IF.Psudo);
 
             } else {
