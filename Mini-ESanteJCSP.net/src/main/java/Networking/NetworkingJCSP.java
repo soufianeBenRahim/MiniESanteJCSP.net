@@ -101,7 +101,8 @@ public class NetworkingJCSP implements CSProcess {
                         LinkFactory.getLink(((Contact) o2).getNodAdress()).getRemoteNodeID();
                         Channel2Remout = NetChannel.one2net(remoteID, 45);
                     } else {
-                        switch((int)o2){
+                        if(o2 instanceof Integer){
+                            switch((int)o2){
                             case 0:
                                  m.ChangeStatAnnuaireConnection(true);
                                 break;
@@ -120,7 +121,7 @@ public class NetworkingJCSP implements CSProcess {
                                 jop2.showMessageDialog(null, "ce medecin n'est pas connectee", "inf", JOptionPane.INFORMATION_MESSAGE);
                             break;
                         }
-                       
+                        }
                     }
                     break;
             }

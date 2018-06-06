@@ -532,7 +532,7 @@ public class menu extends javax.swing.JFrame {
                 jTextFieldIPDeestant.setText("Par Psudo :" + IF.Psudo);
 
             } else {
-                ControlMesage2Sind.out().write(new TCPIPNodeAddress(UsingIP, 5000));
+                ControlMesage2Sind.out().write(new TCPIPNodeAddress(IF.IP, 5000));
                 jTextFieldIPDeestant.setText("Par IP : " + IF.IP);
                 
             }
