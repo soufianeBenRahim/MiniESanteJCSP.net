@@ -2,7 +2,7 @@ package com.xpertsoft.mini.esante.gui;
 
 import Networking.Contact;
 import Networking.MessageClient;
-import com.xpertsoft.mini.esante.Metier.MetierImplimentationTiers;
+import com.xpertsoft.mini.esante.Metier.MiniESanteDAO;
 import com.xpertsoft.mini.esante.Model.PrescriptionDetail;
 import com.xpertsoft.mini.esante.Model.Prescriptionentet;
 
@@ -79,12 +79,12 @@ public class menu extends javax.swing.JFrame {
     }
 
     private void displayTiers() {
-        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        MiniESanteDAO impTiers = new MiniESanteDAO();
         this.TableTiers.setModel(new AbstractTableModelTiers(impTiers.getALLTiers()));
     }
 
     private void displayPrescription() {
-        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        MiniESanteDAO impTiers = new MiniESanteDAO();
         List<Prescriptionentet> pres = impTiers.getAllPrescription();
 
         this.jTablePRescription.setModel(new AbstractTableModelPrescription(pres));
@@ -96,7 +96,7 @@ public class menu extends javax.swing.JFrame {
     }
 
     private void displayPrescriptionDetail(int IDprescription) {
-        MetierImplimentationTiers impTiers = new MetierImplimentationTiers();
+        MiniESanteDAO impTiers = new MiniESanteDAO();
         this.jTablePrescriptionDetail.setModel(new AbstractTableModelPrescriptionDetail(
                 impTiers.getDetailPrescription(IDprescription)));
     }
@@ -438,7 +438,7 @@ public class menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSupprimerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSupprimerPrescriptionActionPerformed
-        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        MiniESanteDAO m = new MiniESanteDAO();
         AbstractTableModelPrescription model = (AbstractTableModelPrescription) jTablePRescription.getModel();
         model.removePrescription(jTablePRescription.getSelectedRow());
         displayPrescription();
@@ -447,7 +447,7 @@ public class menu extends javax.swing.JFrame {
     private void jButtonEnvoiyerPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnvoiyerPrescriptionActionPerformed
 
         int ID = (int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(), 0);
-        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        MiniESanteDAO m = new MiniESanteDAO();
         Prescriptionentet p = m.GetPrescriptionentetByID(ID);
         List<PrescriptionDetail> detail = m.getDetailPrescription(p.getCodePrescription());
         ControlMesage2Sind.out().write(new MessageClient(p, detail));
@@ -462,7 +462,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonAjouterTiersActionPerformed
 
     private void jButtonSupprimerTiersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSupprimerTiersActionPerformed
-        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        MiniESanteDAO m = new MiniESanteDAO();
         AbstractTableModelTiers model = (AbstractTableModelTiers) TableTiers.getModel();
         int row = TableTiers.getSelectedRow();
         if (row < 0) {
@@ -504,7 +504,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonAjouterPrescriptionActionPerformed
 
     private void jButtonModifierPrescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModifierPrescriptionActionPerformed
-        MetierImplimentationTiers m = new MetierImplimentationTiers();
+        MiniESanteDAO m = new MiniESanteDAO();
         Prescriptionentet p = m.GetPrescriptionentetByID((int) jTablePRescription.getValueAt(jTablePRescription.getSelectedRow(), 0));
 
         FichePrescription FP = new FichePrescription(this, true, "Modifier", p, null);
