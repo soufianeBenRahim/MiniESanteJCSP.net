@@ -62,8 +62,8 @@ public class NetworkingJCSP implements CSProcess {
                     break;
                 // pour les solicitation ou prescription qui vients des autre client 
                 case FROMREMOUT:
+                    MessageClient message = (MessageClient) inFromRemout.read();
                     if (recive) {
-                        MessageClient message = (MessageClient) inFromRemout.read();
                         switch (message.getTypeRequest()) {
                             case MessageClient.PRESCRIPTION:
                                 int result = JOptionPane.showConfirmDialog(m, "Une Prescription vien d'etre arrivee voulez vous le voir", "Accuse de reception", JOptionPane.YES_NO_OPTION);
@@ -73,8 +73,12 @@ public class NetworkingJCSP implements CSProcess {
                                 }
                                 break;
                             case MessageClient.SOLICITATION:
-                                int result2 = JOptionPane.showConfirmDialog(m, message.getSolicitation(), "Solisitation", JOptionPane.YES_NO_OPTION);
+                                int result2 = JOptionPane.showConfirmDialog(m, message.getSolicitation()+"/n"+" Voulez-vous vous connecter avec ce médecin?", "Solisitation", JOptionPane.YES_NO_OPTION);
                                 if (result2 == JOptionPane.YES_OPTION) {
+                                NodeID remoteID =
+                                LinkFactory.getLink(message.getAdressRetour()).getRemoteNodeID();
+                                Channel2Remout = NetChannel.one2net(remoteID, 45);
+                                m.ChangeAdressDestant(message.getAdressRetour().getIpAddress());
                                 }
                                 break;
                         }

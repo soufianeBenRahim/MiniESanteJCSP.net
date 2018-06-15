@@ -422,7 +422,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtonRecever">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Recever"/>
+        <Property name="text" type="java.lang.String" value="activer la r&#xe9;ception"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonReceverActionPerformed"/>

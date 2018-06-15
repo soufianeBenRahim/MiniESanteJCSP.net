@@ -380,7 +380,7 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
-        jButtonRecever.setText("Recever");
+        jButtonRecever.setText("activer la réception");
         jButtonRecever.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonReceverActionPerformed(evt);
@@ -602,6 +602,9 @@ public class menu extends javax.swing.JFrame {
     public void ChangeStatRecive(boolean recive) {
         jButtonRecever.setEnabled(!recive);
         jButtonEndRecive.setEnabled(recive);// TODO add your handling code here:
+    }
+     public void ChangeAdressDestant(String IP) {
+     jTextFieldIPDeestant.setText("Par IP : " + IP);
     }
 
     public static void main(String[] args) {
