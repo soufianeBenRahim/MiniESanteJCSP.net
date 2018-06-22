@@ -73,7 +73,7 @@ public class NetworkingJCSP implements CSProcess {
                                 }
                                 break;
                             case MessageClient.SOLICITATION:
-                                int result2 = JOptionPane.showConfirmDialog(m, message.getSolicitation()+"/n"+" Voulez-vous vous connecter avec ce médecin?", "Solisitation", JOptionPane.YES_NO_OPTION);
+                                int result2 = JOptionPane.showConfirmDialog(m, message.getSolicitation()+" \n"+" Voulez-vous vous connecter avec ce médecin?", "Solisitation", JOptionPane.YES_NO_OPTION);
                                 if (result2 == JOptionPane.YES_OPTION) {
                                 NodeID remoteID =
                                 LinkFactory.getLink(message.getAdressRetour()).getRemoteNodeID();

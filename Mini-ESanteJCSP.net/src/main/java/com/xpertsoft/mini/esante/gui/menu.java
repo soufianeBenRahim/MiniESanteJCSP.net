@@ -541,7 +541,9 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonConnectClientActionPerformed
 
     private void jButtonDeconnectAnnuairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeconnectAnnuairActionPerformed
-
+        Contact c = new Contact(this.name, this.pass, new TCPIPNodeAddress(UsingIP, 5000), 2);
+             
+              ControlMesage2Sind.out().write(c);
 
     }//GEN-LAST:event_jButtonDeconnectAnnuairActionPerformed
 
